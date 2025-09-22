@@ -18,6 +18,7 @@ export default function PokemonList() {
   const [visibleCount, setVisibleCount] = useState(20);
   const LOAD_MORE_COUNT = 20;
   const THRESHOLD = 500;
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     const loadPokemonData = async () => {
@@ -25,41 +26,63 @@ export default function PokemonList() {
         setLoading(true);
         setError(null);
 
-        const pokemonList = await pokeApi.getAllPokemon(1000);
-        const limitedList = pokemonList.results.slice(0, 1000);
+        const pokemonList = await pokeApi.getAllPokemon();
+        const limitedList = pokemonList.results.slice(0, 1025);
 
-        const pokemonPromises = limitedList.map(async (pokemonItem) => {
-          try {
-            const pokemon = await pokeApi.getPokemon(pokemonItem.name);
-            const generation = pokeApi.getGenerationFromId(pokemon.id);
+        const batchSize = 50;
+        const allPokemonData: Array<
+          Pokemon & { generation: string; evolutionGroup: string[] }
+        > = [];
+        const totalBatches = Math.ceil(limitedList.length / batchSize);
 
-            const species = await pokeApi.getPokemonSpecies(pokemon.id);
-            let evolutionGroup: string[] = [];
-            if (species.evolution_chain?.url) {
-              const evolutionChain = await pokeApi.getEvolutionChain(
-                parseInt(
-                  species.evolution_chain.url.split("/").slice(-2, -1)[0]
-                )
+        for (let i = 0; i < limitedList.length; i += batchSize) {
+          const batch = limitedList.slice(i, i + batchSize);
+          const currentBatch = Math.floor(i / batchSize) + 1;
+
+          setLoadingProgress(Math.round((currentBatch / totalBatches) * 100));
+
+          const batchPromises = batch.map(async (pokemonItem) => {
+            try {
+              const pokemon = await pokeApi.getPokemon(pokemonItem.name);
+              const generation = pokeApi.getGenerationFromId(pokemon.id);
+
+              const species = await pokeApi.getPokemonSpecies(pokemon.id);
+              let evolutionGroup: string[] = [];
+              if (species.evolution_chain?.url) {
+                const evolutionChain = await pokeApi.getEvolutionChain(
+                  parseInt(
+                    species.evolution_chain.url.split("/").slice(-2, -1)[0]
+                  )
+                );
+                evolutionGroup = pokeApi.getEvolutionNames(
+                  evolutionChain.chain
+                );
+              }
+
+              return { ...pokemon, generation, evolutionGroup };
+            } catch (error) {
+              console.error(
+                `Error loading Pokemon ${pokemonItem.name}:`,
+                error
               );
-              evolutionGroup = pokeApi.getEvolutionNames(evolutionChain.chain);
+              return null;
             }
+          });
 
-            return { ...pokemon, generation, evolutionGroup };
-          } catch (error) {
-            console.error(`Error loading Pokemon ${pokemonItem.name}:`, error);
-            return null;
-          }
-        });
+          const batchResults = await Promise.all(batchPromises);
+          const validResults = batchResults.filter(
+            (
+              pokemon
+            ): pokemon is Pokemon & {
+              generation: string;
+              evolutionGroup: string[];
+            } => pokemon !== null
+          );
 
-        const pokemonResults = await Promise.all(pokemonPromises);
-        const validPokemon = pokemonResults.filter(
-          (
-            pokemon
-          ): pokemon is Pokemon & {
-            generation: string;
-            evolutionGroup: string[];
-          } => pokemon !== null
-        );
+          allPokemonData.push(...validResults);
+        }
+
+        const validPokemon = allPokemonData;
 
         setPokemonData(validPokemon);
       } catch (error) {
@@ -138,7 +161,23 @@ export default function PokemonList() {
   };
 
   if (loading)
-    return <div className="text-center py-12">Cargando Pokémon...</div>;
+    return (
+      <div className="text-center py-12">
+        <div className="mb-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+        </div>
+        <p className="text-gray-700 text-lg mb-2">Cargando Pokémon...</p>
+        <div className="w-full max-w-md mx-auto bg-gray-200 rounded-full h-2.5">
+          <div
+            className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-out"
+            style={{ width: `${loadingProgress}%` }}
+          ></div>
+        </div>
+        <p className="text-gray-500 text-sm mt-2">
+          {loadingProgress}% completado
+        </p>
+      </div>
+    );
   if (error)
     return (
       <div className="text-center py-12">

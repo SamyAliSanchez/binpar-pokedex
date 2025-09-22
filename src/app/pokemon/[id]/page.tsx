@@ -9,7 +9,7 @@ interface PokemonPageProps {
 }
 
 export async function generateStaticParams() {
-  const pokemonList = await pokeApi.getAllPokemon(50);
+  const pokemonList = await pokeApi.getAllPokemon();
 
   return pokemonList.results.map((pokemon) => ({
     id: pokemon.url.split("/").slice(-2, -1)[0],

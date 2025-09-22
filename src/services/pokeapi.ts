@@ -17,7 +17,7 @@ const endpoints = {
   evolution: (id: number) => `${POKEAPI_BASE_URL}/evolution-chain/${id}`,
   generation: `${POKEAPI_BASE_URL}/generation`,
   type: `${POKEAPI_BASE_URL}/type`,
-  allPokemon: (limit = 1000, offset = 0) =>
+  allPokemon: (limit = 1300, offset = 0) =>
     `${POKEAPI_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`,
 };
 
@@ -35,7 +35,7 @@ async function fetchFromAPI<T>(url: string): Promise<T> {
 }
 
 export const pokeApi = {
-  getAllPokemon: (limit = 1000, offset = 0) =>
+  getAllPokemon: (limit = 1300, offset = 0) =>
     fetchFromAPI<PokemonListResponse>(endpoints.allPokemon(limit, offset)),
 
   getPokemon: (idOrName: string | number) =>
@@ -93,9 +93,10 @@ export const pokeApi = {
       { max: 721, gen: "generation-vi" },
       { max: 809, gen: "generation-vii" },
       { max: 905, gen: "generation-viii" },
+      { max: 1025, gen: "generation-ix" },
     ];
 
-    return gens.find((g) => id <= g.max)?.gen ?? "generation-ix";
+    return gens.find((g) => id <= g.max)?.gen ?? "generation-x";
   },
 
   getEvolutionNames: (chain: EvolutionChain["chain"]): string[] => {

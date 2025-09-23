@@ -12,7 +12,7 @@ interface PokemonCardProps {
 export default function PokemonCard({ pokemon, generation }: PokemonCardProps) {
   const primaryType = pokemon.types[0]?.type.name || "unknown";
 
-  const typeColors: Record<string, string> = {
+  const cardColors: Record<string, string> = {
     normal: "bg-gray-400",
     fire: "bg-red-500",
     water: "bg-blue-500",
@@ -34,7 +34,29 @@ export default function PokemonCard({ pokemon, generation }: PokemonCardProps) {
     unknown: "bg-gray-300",
   };
 
-  const cardColor = typeColors[primaryType] || "bg-gray-300";
+  const typeColors: Record<string, string> = {
+    normal: "bg-gray-600",
+    fire: "bg-orange-400",
+    water: "bg-cyan-400",
+    electric: "bg-amber-300",
+    grass: "bg-lime-400",
+    ice: "bg-sky-300",
+    fighting: "bg-red-600",
+    poison: "bg-violet-400",
+    ground: "bg-amber-600",
+    flying: "bg-slate-400",
+    psychic: "bg-rose-400",
+    bug: "bg-emerald-400",
+    rock: "bg-stone-500",
+    ghost: "bg-indigo-500",
+    dragon: "bg-purple-500",
+    dark: "bg-gray-700",
+    steel: "bg-zinc-400",
+    fairy: "bg-pink-200",
+    unknown: "bg-gray-500",
+  };
+
+  const cardColor = cardColors[primaryType] || "bg-gray-300";
 
   return (
     <Link href={`/pokemon/${pokemon.id}`}>
@@ -71,7 +93,9 @@ export default function PokemonCard({ pokemon, generation }: PokemonCardProps) {
             {pokemon.types.map((type, index) => (
               <span
                 key={index}
-                className="bg-white bg-opacity-20 px-2 py-1 rounded-full text-xs font-medium capitalize"
+                className={`${
+                  typeColors[type.type.name] || "bg-gray-500"
+                } text-white px-2 py-1 rounded-full font-medium text-xs capitalize shadow-sm`}
               >
                 {type.type.name}
               </span>

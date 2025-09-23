@@ -1,8 +1,8 @@
-# 🎮 Pokédex - Binpar Technical Test
+# Pokedex - Binpar Technical Test
 
 ## Deployment
 
-The application is deployed in Vercel and you can access it with the following link
+The application is deployed in Vercel and you can access it with the following link: https://binpar-samy-pokedex.vercel.app/
 
 ## Technologies Used
 
@@ -15,26 +15,26 @@ The application is deployed in Vercel and you can access it with the following l
 
 ```
 src/
-├── app/                          # Next.js App Router
-│   ├── layout.tsx               # Main layout
-│   ├── page.tsx                 # Home page
-│   ├── error.tsx                # Global error page
-│   ├── not-found.tsx            # 404 page
-│   └── pokemon/[id]/            # Dynamic Pokémon pages
-│       ├── page.tsx             # Detail page
-│       ├── loading.tsx          # Loading skeleton
-│       └── error.tsx            # Pokémon-specific error
-├── components/                   # React components
-│   ├── PokemonCard.tsx          # Individual Pokémon card
-│   ├── PokemonDetail.tsx        # Complete detail page
-│   ├── PokemonList.tsx          # Main list with filters
-│   └── SearchAndFilters.tsx     # Search component
-├── context/                      # Context API
-│   └── PokemonListContext.tsx   # Global filter state
-├── services/                     # API services
-│   └── pokeapi.ts               # PokéAPI client
-└── types/                        # TypeScript definitions
-    └── pokemon.ts               # Data interfaces
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── error.tsx
+│   ├── not-found.tsx
+│   └── pokemon/[id]/
+│       ├── page.tsx
+│       ├── loading.tsx
+│       └── error.tsx
+├── components/
+│   ├── PokemonCard.tsx
+│   ├── PokemonDetail.tsx
+│   ├── PokemonList.tsx
+│   └── SearchAndFilters.tsx
+├── context/
+│   └── PokemonListContext.tsx
+├── services/
+│   └── pokeapi.ts
+└── types/
+    └── pokemon.ts
 ```
 
 ## Installation

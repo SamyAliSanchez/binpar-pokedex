@@ -19,19 +19,6 @@ export default function PokemonDetail({ pokemonInfo }: PokemonDetailProps) {
   const [evolutionPokemon, setEvolutionPokemon] = useState<Pokemon[]>([]);
   const [loadingEvolutions, setLoadingEvolutions] = useState(true);
 
-  const getAllEvolutionNames = useCallback(
-    (chain: EvolutionChain["chain"]): string[] => {
-      const names = [chain.species.name];
-
-      chain.evolves_to.forEach((evolution) => {
-        names.push(...getAllEvolutionNames(evolution));
-      });
-
-      return names;
-    },
-    []
-  );
-
   useEffect(() => {
     const loadEvolutions = async () => {
       if (!evolutionChain) {
@@ -40,7 +27,7 @@ export default function PokemonDetail({ pokemonInfo }: PokemonDetailProps) {
       }
 
       try {
-        const evolutionNames = getAllEvolutionNames(evolutionChain.chain);
+        const evolutionNames = pokeApi.getEvolutionNames(evolutionChain.chain);
         const evolutionPromises = evolutionNames.map((name) =>
           pokeApi.getPokemon(name).catch(() => null)
         );
@@ -59,7 +46,7 @@ export default function PokemonDetail({ pokemonInfo }: PokemonDetailProps) {
     };
 
     loadEvolutions();
-  }, [evolutionChain, getAllEvolutionNames]);
+  }, [evolutionChain, pokeApi.getEvolutionNames]);
 
   const formatName = (name: string) => {
     return name.charAt(0).toUpperCase() + name.slice(1).replace(/-/g, " ");

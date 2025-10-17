@@ -1,4 +1,4 @@
-# Pokedex - Binpar Technical Test
+# Pokedex - Project
 
 ## Deployment
 

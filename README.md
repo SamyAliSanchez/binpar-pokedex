@@ -10,6 +10,8 @@ The application is deployed in Vercel and you can access it with the following l
 - **TypeScript** - Static typing for enhanced security
 - **TailwindCSS** - Utility-first CSS framework
 - **PokéAPI** - REST API for Pokémon data
+- **Jest** – Runner and assertions for tests
+- **Testing Library** – Render and accesible events in UI test
 
 ## Project Structure
 
